@@ -61,9 +61,10 @@ Per-90 columns are only meaningful when `analysis_minutes_eligible` is true
   goalkeepers are not judged by the same stats. Comparisons are done within
   position (and sub-position, where the data supports it) rather than pooling
   all players together.
-- A simple statistical method (e.g. a regression) may be added later if it
-  helps answer the research question. Machine learning is not assumed to be
-  necessary and won't be added without a clear reason.
+- This is an EDA and visualization project. The instructor has confirmed
+  that machine learning and complex statistical modeling are not required,
+  and none is planned. Simple summaries (medians, Spearman correlations)
+  support the plots.
 - Optional: if injury data can be found that is reliable and easy to
   integrate, it may be added as a secondary variable. Not required, and not
   a second dataset until the core analysis is done.
@@ -149,7 +150,7 @@ Data cleaned, joined, and aggregated to player-season
 staleness cap, per-90 minutes eligibility, unique league identity) are
 applied and documented. Position-aware EDA (6 figures, Spearman tables) is
 in `notebooks/03_initial_eda.ipynb`; preliminary findings and open questions
-are in `MEETING2.md`. No statistical modeling yet.
+are in `MEETING2.md`. No modeling is planned; the project is EDA and visualization.
 
 ## Timeline
 

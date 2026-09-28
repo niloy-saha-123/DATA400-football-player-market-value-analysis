@@ -169,8 +169,8 @@ actually downloaded.
 - **League effect (open, not resolved).** Median market value differs by an
   order of magnitude between leagues (shown in `03_initial_eda.ipynb`).
   Pooled relationships will partly reflect league. No leagues have been
-  removed. Options to discuss with the instructor: keep all and stratify,
-  include league in a regression, or restrict to major leagues.
+  removed. Options to discuss with the instructor: keep all and compare/stratify by
+  league, or restrict to a smaller set of leagues.
 
 - **Multi-club players within a season (decided)**: 6.4% of player-seasons
   in the chosen scope involve more than one club (3.3% involve more than
@@ -222,8 +222,9 @@ actually downloaded.
 - Multi-club player-seasons (2020–2024, 14-league scope): 6.4% of
   player-seasons involve >1 club; 3.3% involve >1 league/country.
 
-See "Final exclusions applied" in `02_build_player_season.ipynb` for the
-exact row counts dropped at each cleaning step for the built dataset.
+See §7 (Exclusions) of `02_build_player_season.ipynb` and
+`data/processed/exclusion_summary.csv` for the exact row counts dropped at
+each cleaning step.
 
 ## Current build results
 
@@ -253,9 +254,9 @@ exact row counts dropped at each cleaning step for the built dataset.
    leagues and stratify/control for league, or narrow to major leagues?
 2. **Valuation rule.** Is "latest valuation on or before July 31, no older
    than 365 days" a reasonable season-end mapping?
-3. **Method.** Is position-aware EDA plus Spearman correlations enough for
-   this mini-project, or would a simple regression materially improve the
-   answer?
+3. **Depth.** Does the current position-aware EDA and visualization approach
+   provide enough depth, or is there another comparison or visualization that
+   would strengthen the analysis?
 
 (The multi-club "primary club by minutes" rule and the 14-league Aug–May
 scope are decided; they are documented above, not open.)
