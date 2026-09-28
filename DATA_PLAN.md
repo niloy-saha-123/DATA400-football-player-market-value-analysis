@@ -68,8 +68,12 @@ actually downloaded.
 5. Join `players` on `player_id` for `position`, `sub_position`,
    `date_of_birth` → derive `age` as of the season's start (Aug 1).
 6. Join a season-level market value from `player_valuations` using the
-   July-31-of-`season+1` cutoff rule.
-7. Drop players with `position == 'Missing'`.
+   July-31-of-`season+1` cutoff rule; record `valuation_age_days`.
+7. Apply exclusions sequentially (missing position, missing DOB, no
+   valuation, valuation older than 365 days, zero minutes) and save the
+   counts to `data/processed/exclusion_summary.csv`.
+8. Flag `analysis_minutes_eligible` (`total_minutes >= 450`) for per-90
+   analysis. Low-minute rows are kept, not dropped.
 
 ## Decisions and assumptions (log) — FINALIZED for the player-season build
 
@@ -83,6 +87,14 @@ actually downloaded.
   Bundesliga (Germany), Eredivisie (Netherlands), Ligue 1 (France), Ukraine
   Premier Liga, Russia Premier Liga, Jupiler Pro League (Belgium), Scottish
   Premiership, Super League Greece, Superliga Denmark.
+  **Identity caveat (fixed):** the source `competitions.name` is not unique
+  — Russia (`RU1`) and Ukraine (`UKR1`) are both `premier-liga` (and
+  `bundesliga` / `superliga` also collide with out-of-scope Austria/Romania).
+  The processed data keeps the unique `competition_id` and an explicit
+  readable `competition` label (e.g. "Russian Premier League"). Russia and
+  Ukraine are both kept; the 2022+ war context (disrupted Ukrainian league,
+  Russian clubs cut off from European competition) is a caveat, not an
+  exclusion.
   Excluded from this scope:
   - Domestic cups, international cups, and national-team competitions (as
     before — avoids double-counting minutes across very different
@@ -133,6 +145,32 @@ actually downloaded.
   - Not used: nearest-to-season-start (would miss the performance just
     played), or a window average (adds complexity without a clear benefit
     for this project's scope).
+
+- **Maximum valuation staleness (decided): 365 days.** The matched
+  valuation must be no more than 365 days before the cutoff
+  (`valuation_age_days <= 365`). Evidence (`02_build_player_season.ipynb`
+  §6b): median lag 55 days, 95th percentile 76 days; the bulk of matches
+  are 30–120 days old, then a thin tail (only 39 rows at 270–365 days) and
+  416 rows (1.3%) older than 365 days, up to 2,472 days (6.8 years). Those
+  416 are excluded and counted (384 of them in season 2024; cause not
+  investigated). 365 is a practical cap, not a uniquely correct value.
+
+- **Per-90 eligibility (decided): `total_minutes >= 450`.** Rows below the
+  threshold are **kept** in the dataset; `goals_per_90`, `assists_per_90` and
+  `goal_contributions_per_90` are only used for analysis when
+  `analysis_minutes_eligible` is true. Evidence: before filtering, per-90
+  values reach 90 (a goal in 1 minute); at 450 minutes the maximum goals/90
+  is 1.50 and the attacker goals/90 spread and 99th percentile have mostly
+  flattened, while ~73% of rows remain. 450 (five full matches) is a
+  practical stability rule, not a universally correct threshold. Plots and
+  correlations that use age, position, minutes, or market value alone use all
+  rows.
+
+- **League effect (open, not resolved).** Median market value differs by an
+  order of magnitude between leagues (shown in `03_initial_eda.ipynb`).
+  Pooled relationships will partly reflect league. No leagues have been
+  removed. Options to discuss with the instructor: keep all and stratify,
+  include league in a regression, or restrict to major leagues.
 
 - **Multi-club players within a season (decided)**: 6.4% of player-seasons
   in the chosen scope involve more than one club (3.3% involve more than
@@ -189,34 +227,35 @@ exact row counts dropped at each cleaning step for the built dataset.
 
 ## Current build results
 
-`data/processed/player_season.csv` — built by `02_build_player_season.ipynb`:
+`data/processed/player_season.csv` (5.6 MB, 21 columns) and
+`data/processed/exclusion_summary.csv`, built by `02_build_player_season.ipynb`:
 
-- **32,462 rows** (one per player-season), after exclusions.
-- Started at 32,966 player-seasons before exclusions; dropped 504: 493 for
-  no market valuation on or before the cutoff (by far the largest reason —
-  mostly fringe/reserve players never valued), 9 for missing position, 5
-  for missing date of birth, 0 for zero minutes, 0 duplicate keys.
-- Rows per season: roughly 5,860–6,710, fairly even across 2020–2024
-  (2021 is the low point, consistent with the modest dip seen across nearly
-  every league that season in `01_data_inspection.ipynb` — not a data
-  problem, just a real fluctuation in squad/appearance counts).
-- Position counts: Defender 11,080; Midfield 9,536; Attack 9,251;
-  Goalkeeper 2,595.
-- `market_value_in_eur`: median €1.2M, mean €5.4M, range €20K–€200M
-  (heavily right-skewed, as expected — see the EDA notebook's log-scale
-  discussion).
-- No negative goals/assists/minutes; no duplicate (player_id, season) keys.
+- **32,046 rows** (one per player-season), after exclusions.
+- Started at 32,966 player-seasons; dropped 920, counted sequentially:
+  9 missing position, 5 missing date of birth, 490 no valuation by the
+  cutoff, 416 valuation older than 365 days, 0 zero-minute rows, 0 duplicate
+  keys.
+- Rows per season: 6,671 (2020), 5,860 (2021), 6,700 (2022), 6,679 (2023),
+  6,136 (2024).
+- Position counts: Defender 10,942; Midfield 9,428; Attack 9,116;
+  Goalkeeper 2,560.
+- Per-90 eligible (`total_minutes >= 450`): 23,328 rows (72.8%).
+- `market_value_in_eur`: median €1.3M, mean €5.4M, range €20K–€200M
+  (heavily right-skewed; log scale is used in the plots).
+- 14 leagues with unique `competition_id` and unambiguous `competition`
+  labels. Validity checks (no negative goals/assists/minutes, market value
+  > 0, valuation age within 0–365 days, exactly 4 positions, no nulls) are
+  asserted in the notebook.
 
-## What to check before the first instructor meeting
+## Open questions for the instructor
 
-1. Whether the competition-scope simplification (14 Aug–May leagues only,
-   dropping Brazil/MLS/Nordic/etc.) is acceptable for the project, or
-   whether the calendar-year leagues should be added back with their own
-   cutoff rule.
-2. Whether the July 31 valuation cutoff is a reasonable rule, or whether the
-   instructor prefers a different convention.
-3. The multi-club "primary club by minutes" simplification — confirm it's
-   fine to keep goals/assists/minutes summed across clubs while only the
-   club/league label reflects the primary one.
-4. Final row count and shape of `player_season.csv` (see README for current
-   numbers) — is it a reasonable size for the remaining timeline?
+1. **League confound.** Market values differ hugely by league. Keep all 14
+   leagues and stratify/control for league, or narrow to major leagues?
+2. **Valuation rule.** Is "latest valuation on or before July 31, no older
+   than 365 days" a reasonable season-end mapping?
+3. **Method.** Is position-aware EDA plus Spearman correlations enough for
+   this mini-project, or would a simple regression materially improve the
+   answer?
+
+(The multi-club "primary club by minutes" rule and the 14-league Aug–May
+scope are decided; they are documented above, not open.)

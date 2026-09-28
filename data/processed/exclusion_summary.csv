@@ -1,0 +1,8 @@
+step,rows_dropped,rows_remaining
+"Initial player-seasons in scope (14 leagues, 2020-2024)",0,32966
+Missing position,9,32957
+Missing date of birth,5,32952
+No valuation on/before July 31 cutoff,490,32462
+Valuation older than 365 days at cutoff,416,32046
+Zero total minutes,0,32046
+"Of final rows: eligible for per-90 analysis (>= 450 min; flagged, not dropped)",8718,23328

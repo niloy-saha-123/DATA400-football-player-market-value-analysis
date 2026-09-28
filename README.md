@@ -30,21 +30,27 @@ sale price and not necessarily the fee a club would actually pay.
 
 ## Unit of observation
 
-One row per player-season: **32,462 player-seasons**, seasons 2020/21
+One row per player-season: **32,046 player-seasons**, seasons 2020/21
 through 2024/25, across 14 top-flight European domestic leagues. Built by
 aggregating match-level appearances and joining a season-end market value
-— see `DATA_PLAN.md` for the exact construction and every scope/cleaning
+(no older than 365 days at the cutoff) — see `DATA_PLAN.md` for the exact construction and every scope/cleaning
 decision.
 
 ## Variables
 
 `player_id`, `player_name`, `season`, `age`, `position`, `sub_position`,
-`club`, `competition`, `appearances`, `total_minutes`, `goals`, `assists`,
-`goals_per_90`, `assists_per_90`, `goal_contributions_per_90`,
-`market_value_in_eur`, `valuation_date`.
+`club`, `competition_id`, `competition`, `country`, `appearances`,
+`total_minutes`, `goals`, `assists`, `goals_per_90`, `assists_per_90`,
+`goal_contributions_per_90`, `analysis_minutes_eligible`,
+`market_value_in_eur`, `valuation_date`, `valuation_age_days`.
 
 `club`/`competition` reflect a player's primary (most-minutes) club that
 season — see `DATA_PLAN.md` for how multi-club seasons are handled.
+`competition_id` is the unique league key (the source's own league `name`
+is not unique: Russia and Ukraine are both `premier-liga`).
+
+Per-90 columns are only meaningful when `analysis_minutes_eligible` is true
+(`total_minutes >= 450`). Low-minute rows are kept, not deleted.
 
 ## Approach
 
@@ -74,8 +80,13 @@ season — see `DATA_PLAN.md` for how multi-club seasons are handled.
   value for a season is the latest valuation on or before July 31 following
   that season, a documented assumption, not a given fact of the data.
 - Players with no valuation on record before that cutoff (mostly fringe
-  squad players) are dropped rather than imputed — about 1.5% of the
-  pre-exclusion rows.
+  squad players) are dropped rather than imputed, as are valuations more
+  than 365 days old at the cutoff — 920 of 32,966 rows (2.8%) in total, see
+  `data/processed/exclusion_summary.csv`.
+- Market values differ enormously between leagues, so pooled relationships
+  partly reflect league. Not yet resolved (see `DATA_PLAN.md`).
+- Russian and Ukrainian leagues are kept, but 2022+ seasons are affected by
+  the war.
 - Playing time, goals, and assists are influenced by team and tactical
   context that isn't captured here.
 
@@ -132,10 +143,11 @@ downloaded from the dataset's public hosting.
 
 ## Current status
 
-Data cleaned, joined, and aggregated to player-season; first EDA pass done
-(Timeline, Sept 18–24). `data/processed/player_season.csv` exists (32,462
-rows) and three initial plots are saved under `figures/`. No statistical
-modeling yet — that's next, per the timeline.
+Data cleaned, joined, and aggregated to player-season
+(`data/processed/player_season.csv`, 32,046 rows). Quality rules (valuation
+staleness cap, per-90 minutes eligibility, unique league identity) are
+applied and documented. EDA is in `notebooks/03_initial_eda.ipynb`. No
+statistical modeling yet.
 
 ## Timeline
 
