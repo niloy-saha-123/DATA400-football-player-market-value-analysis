@@ -95,12 +95,13 @@ Per-90 columns are only meaningful when `analysis_minutes_eligible` is true
 ```
 .
 ├── README.md
-├── DATA_PLAN.md          # data inspection notes, joins, open questions
+├── DATA_PLAN.md          # data inspection notes, joins, decisions, open questions
+├── MEETING2.md           # findings, limitations, professor questions, talk outline
 ├── .gitignore
 ├── requirements.txt
 ├── data/
 │   ├── raw/               # downloaded source files (gitignored, see below)
-│   └── processed/         # player_season.csv, tracked in git
+│   └── processed/         # player_season.csv + exclusion_summary.csv, tracked in git
 ├── figures/               # saved EDA plots (.png)
 └── notebooks/
     ├── 01_data_inspection.ipynb
@@ -146,8 +147,9 @@ downloaded from the dataset's public hosting.
 Data cleaned, joined, and aggregated to player-season
 (`data/processed/player_season.csv`, 32,046 rows). Quality rules (valuation
 staleness cap, per-90 minutes eligibility, unique league identity) are
-applied and documented. EDA is in `notebooks/03_initial_eda.ipynb`. No
-statistical modeling yet.
+applied and documented. Position-aware EDA (6 figures, Spearman tables) is
+in `notebooks/03_initial_eda.ipynb`; preliminary findings and open questions
+are in `MEETING2.md`. No statistical modeling yet.
 
 ## Timeline
 
