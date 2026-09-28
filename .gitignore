@@ -216,3 +216,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+.code-graph/
+
+# macOS
+.DS_Store
+
+# Raw data (large, publicly downloadable — see data/raw/README.md)
+data/raw/*
+!data/raw/README.md
+
+# Local AI-agent metadata (not part of the project)
+.claude/
+.serena/
+CLAUDE.md

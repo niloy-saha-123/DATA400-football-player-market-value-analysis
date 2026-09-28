@@ -1,0 +1,7 @@
+pandas
+numpy
+matplotlib
+jupyter
+duckdb
+
+# Add scipy / statsmodels later only if a specific statistical test needs them.
