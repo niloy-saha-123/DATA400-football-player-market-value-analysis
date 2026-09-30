@@ -54,12 +54,17 @@ def fig_value_by_age(df, min_n=20):
     if df.empty:
         return _empty()
     d = df.assign(age_int=df["age"].astype(int).clip(17, 36))
-    fig, ax = plt.subplots(figsize=(9, 5))
+    lines = {}
     for pos in POS_ORDER:
         g = d[d["position"] == pos].groupby("age_int")[MV].agg(["median", "size"])
         g = g[g["size"] >= min_n]
         if len(g):
-            ax.plot(g.index, g["median"], marker="o", ms=3, lw=2, color=POS_COLORS[pos], label=pos)
+            lines[pos] = g
+    if not lines:
+        return _empty(f"No age has at least {min_n} players per position in this selection")
+    fig, ax = plt.subplots(figsize=(9, 5))
+    for pos, g in lines.items():
+        ax.plot(g.index, g["median"], marker="o", ms=3, lw=2, color=POS_COLORS[pos], label=pos)
     _log_axis(ax)
     ax.set(title="Median market value by age", xlabel="Age (17 and 36 include younger/older)",
            ylabel="Median market value (log scale)")
