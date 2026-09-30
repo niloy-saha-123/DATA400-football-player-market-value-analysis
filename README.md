@@ -82,8 +82,10 @@ uv venv && uv pip install -r requirements.txt
 uv run streamlit run app.py
 ```
 
-Pages: Overview, Player characteristics, Position analysis, League analysis,
-Player segments, Methodology & limitations. The app reads
+A single scrolling data story for readers new to the project: research
+question, what market value means, how the dataset was built, each finding
+with its caveat, K-means clusters and rule-based segments, what the analysis
+cannot conclude, limitations, and an expandable technical section. The app reads
 `data/processed/player_season.csv` directly; no notebooks or raw data needed.
 
 ## Repository structure
@@ -95,12 +97,13 @@ Player segments, Methodology & limitations. The app reads
 ├── DATA_PLAN.md           # data inspection notes, joins, decisions, variables
 ├── MEETING2.md            # second instructor meeting notes
 ├── FINAL_CHECKLIST.md     # project requirements audit
-├── app.py                 # Streamlit dashboard
+├── app.py                 # Streamlit data story
 ├── requirements.txt       # pinned versions (Python 3.12)
 ├── src/
 │   ├── data.py            # loading, constants, filtering
 │   ├── plots.py           # figure functions shared by notebooks and app
-│   └── segments.py        # K-means clusters and rule-based segments (attackers)
+│   ├── segments.py        # K-means clusters and rule-based segments (attackers)
+│   └── ui.py              # CSS and small HTML helpers for the app
 ├── notebooks/
 │   ├── 01_data_inspection.ipynb
 │   ├── 02_build_player_season.ipynb
