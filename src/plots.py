@@ -319,7 +319,7 @@ def fig_value_by_group(a, group_col):
     ax.set_yticks(range(1, len(order) + 1), [f"{g}\nmedian {eur(x.median())}, n={len(x):,}" for g, x in zip(order, data)],
                   fontsize=8)
     _log_axis(ax, "x")
-    ax.set(title="Market value by group (value was NOT used to form the clusters)", xlabel="Market value (log scale)")
+    ax.set(title="Market value by group (market value was not used to define the groups)", xlabel="Market value (log scale)")
     ax.grid(axis="y", visible=False)
     fig.tight_layout()
     return fig

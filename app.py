@@ -52,7 +52,7 @@ if page == "Overview":
     c = st.columns(5)
     c[0].metric("Player-seasons", f"{len(df):,}")
     c[1].metric("Distinct players", f"{df['player_id'].nunique():,}")
-    c[2].metric("Seasons", f"{season_label(df['season'].min())} to {season_label(df['season'].max())}")
+    c[2].metric(f"Seasons ({season_label(df['season'].min())} to {season_label(df['season'].max())})", df["season"].nunique())
     c[3].metric("Leagues", df["competition"].nunique())
     c[4].metric("Positions", df["position"].nunique())
     show(plots.fig_value_distribution(df))
@@ -147,7 +147,10 @@ elif page == "Player segments":
     prof = (g.groupby(col).agg(players=("age", "size"), median_age=("age", "median"), median_minutes=("total_minutes", "median"),
                                goals_per_90=("goals_per_90", "median"), assists_per_90=("assists_per_90", "median"),
                                median_value_eur=(MV, "median")).sort_values("median_value_eur", ascending=False).round(2))
-    st.dataframe(prof)
+    st.dataframe(prof.rename_axis("Group").rename(columns={
+        "players": "Players", "median_age": "Median age", "median_minutes": "Median minutes",
+        "goals_per_90": "Goals/90 (median)", "assists_per_90": "Assists/90 (median)",
+        "median_value_eur": "Median value (EUR)"}))
     a, b = st.columns(2)
     with a:
         show(plots.fig_group_heatmap(g, col, FEATURES))
