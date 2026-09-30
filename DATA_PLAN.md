@@ -228,7 +228,7 @@ each cleaning step.
 
 ## Current build results
 
-`data/processed/player_season.csv` (5.6 MB, 21 columns) and
+`data/processed/player_season.csv` (26 columns) and
 `data/processed/exclusion_summary.csv`, built by `02_build_player_season.ipynb`:
 
 - **32,046 rows** (one per player-season), after exclusions.
@@ -247,6 +247,38 @@ each cleaning step.
   labels. Validity checks (no negative goals/assists/minutes, market value
   > 0, valuation age within 0–365 days, exactly 4 positions, no nulls) are
   asserted in the notebook.
+
+
+## Final analytical dataset — derived variables
+
+Added at the end of `02_build_player_season.ipynb` (§8). The original 21
+columns are unchanged (verified identical after rebuild); raw
+`market_value_in_eur` is never overwritten. 32,046 rows, 26 columns.
+
+| Variable | Definition | Why |
+|---|---|---|
+| `goal_contributions` | `goals + assists` | count version of the existing per-90 column |
+| `minutes_per_appearance` | `total_minutes / appearances` | separates starters (~75-90) from substitutes |
+| `market_value_millions` | `market_value_in_eur / 1e6` | readable axes and tables |
+| `log_market_value` | `log10(market_value_in_eur)` | value is heavily right-skewed; used for clustering/correlations |
+| `age_group` | Under 21, 21-23, 24-26, 27-29, 30+ (age at Aug 1; left-closed bins) | readable age comparisons |
+
+Rows per `age_group`: Under 21 5,371; 21-23 7,325; 24-26 7,344; 27-29 5,932;
+30+ 6,074.
+
+Validation asserted in notebook 02 §9: unique `(player_id, season)`, no
+negative counts, `market_value_in_eur > 0`, valuation age 0-365 days, exactly
+4 positions and 14 unique competition ids/names, age 15-45, no nulls,
+`goal_contributions == goals + assists`, `10**log_market_value` recovers the
+raw value, all five age groups present.
+
+## Instructor feedback (meeting 2)
+
+Direction approved. Suggested exploring player groupings (e.g. K-means) since
+the data has meaningful subgroups (major vs smaller leagues, positions).
+Clustering is exploratory: if K-means gives no interpretable football groups,
+domain-defined segments are acceptable and must be called segments/profiles,
+not clusters. See `notebooks/05_player_segmentation.ipynb`.
 
 ## Open questions for the instructor
 
