@@ -249,3 +249,72 @@ def fig_association_summary(df):
     fig.suptitle("Association strength (descriptive, not causal, not a percentage contribution)", fontsize=11)
     fig.tight_layout()
     return fig
+
+
+GROUP_COLORS = ["#D55E00", "#0072B2", "#009E73", "#CC79A7", "#E69F00", "#56B4E9"]
+
+
+def fig_k_selection(ks, inertia, silhouette):
+    fig, (a, b) = plt.subplots(1, 2, figsize=(9, 3.6))
+    a.plot(ks, inertia, marker="o", color="#0072B2")
+    a.set(title="Elbow: within-cluster sum of squares", xlabel="k", ylabel="Inertia")
+    b.plot(ks, silhouette, marker="o", color="#D55E00")
+    b.axhline(0.25, ls="--", color=GREY, lw=1)
+    b.text(ks[0], 0.255, "0.25: rough threshold for 'some structure'", fontsize=8, color=GREY)
+    b.set(title="Silhouette score", xlabel="k", ylabel="Silhouette", ylim=(0, 0.4))
+    fig.tight_layout()
+    return fig
+
+
+def fig_group_heatmap(a, group_col, features):
+    """Median of each feature per group, shown as z-score of the group median vs all rows."""
+    if a.empty:
+        return _empty()
+    med = a.groupby(group_col)[features].median()
+    z = (med - a[features].mean()) / a[features].std()
+    labels = {"age": "Age", "total_minutes": "Minutes", "goals_per_90": "Goals/90", "assists_per_90": "Assists/90"}
+    fig, ax = plt.subplots(figsize=(1.3 * len(features) + 3, 0.6 * len(z) + 1.6))
+    im = ax.imshow(z.values, cmap="RdBu_r", vmin=-1.5, vmax=1.5, aspect="auto")
+    ax.set_xticks(range(len(features)), [labels.get(f, f) for f in features])
+    ax.set_yticks(range(len(z)), [f"{g} (n={int((a[group_col] == g).sum()):,})" for g in z.index])
+    for i in range(z.shape[0]):
+        for j, f in enumerate(features):
+            ax.text(j, i, f"{med.iloc[i, j]:.2f}" if "per_90" in f else f"{med.iloc[i, j]:.0f}",
+                    ha="center", va="center", fontsize=9, color="white" if abs(z.iloc[i, j]) > 1.0 else "black")
+    ax.grid(False)
+    ax.set_title("Group median profile (colour = distance from overall mean, in SDs)")
+    fig.colorbar(im, ax=ax, shrink=0.8)
+    fig.tight_layout()
+    return fig
+
+
+def fig_pca(a, group_col):
+    if a.empty:
+        return _empty()
+    fig, ax = plt.subplots(figsize=(7, 5.5))
+    for c, (g, s) in zip(GROUP_COLORS, a.groupby(group_col)):
+        ax.scatter(s["pc1"], s["pc2"], s=6, alpha=0.4, color=c, label=f"{g} (n={len(s):,})")
+    ax.legend(frameon=False, markerscale=3, fontsize=8)
+    ax.set(title="2-D PCA projection of the clustering features\n(visualisation only: overlap = no clean separation)",
+           xlabel="PC1", ylabel="PC2")
+    fig.tight_layout()
+    return fig
+
+
+def fig_value_by_group(a, group_col):
+    if a.empty:
+        return _empty()
+    order = a.groupby(group_col)[MV].median().sort_values().index
+    data = [a.loc[a[group_col] == g, MV] for g in order]
+    fig, ax = plt.subplots(figsize=(9, 0.6 * len(order) + 1.8))
+    bp = ax.boxplot(data, orientation="horizontal", patch_artist=True, showfliers=False, widths=0.65,
+                    medianprops={"color": "black"})
+    for patch in bp["boxes"]:
+        patch.set_facecolor("#7A8CA5")
+    ax.set_yticks(range(1, len(order) + 1), [f"{g}\nmedian {eur(x.median())}, n={len(x):,}" for g, x in zip(order, data)],
+                  fontsize=8)
+    _log_axis(ax, "x")
+    ax.set(title="Market value by group (value was NOT used to form the clusters)", xlabel="Market value (log scale)")
+    ax.grid(axis="y", visible=False)
+    fig.tight_layout()
+    return fig
