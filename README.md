@@ -1,164 +1,152 @@
 # What Factors Are Most Associated with Football Player Market Value?
 
-DATA 400 — Data Analytics Capstone, Dickinson College.
+DATA 400 — Data Analytics Capstone Mini-Project, Dickinson College.
 
 ## Research question
 
 Which player characteristics and performance statistics are most strongly
 associated with a football (soccer) player's market value?
 
-## Motivation
+This is an **associational**, not causal, analysis: it describes what tends to
+be higher or lower alongside market value, not what changes it. Market value is
+Transfermarkt's estimate, not a sale price or transfer fee.
 
-Transfermarkt market values are widely cited in football media and analysis,
-but it's not always clear which factors actually track with them. This
-project examines historical player data to see which characteristics — age,
-position, playing time, goal involvement, league — are most strongly
-associated with market value, and whether that relationship differs by
-position.
+## Summary of findings
 
-This is an **associational**, not causal, analysis. We describe what tends to
-be higher or lower alongside market value, not what causes it to change.
+Details, evidence and limitations for each are in [`FINDINGS.md`](FINDINGS.md).
 
-## Data source
+1. Value is extremely right-skewed, so a log scale is used throughout. Age follows a hump (plateau about 22-28, decline after 30), so one linear coefficient (Spearman -0.03) is misleading.
+2. League is the largest single grouping: about 35% of log-value variance lies between leagues (vs 6.5% age group, 1% position). League medians range from €13M (Premier League) to €0.35M (Ukraine).
+3. Playing time has the strongest simple numeric association (Spearman 0.51), and it works in both directions.
+4. Goal involvement is more associated with value for attackers (0.45) than midfielders (0.26) or defenders (0.19).
+5. Position and sub-position separate values little; goalkeepers are lowest.
+6. K-means on attackers gives four readable but weakly separated groups (silhouette about 0.21 for every k). Rule-based segments are shown separately and labelled as segments.
 
-[David Caribou's transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets) —
-a public, cleaned, dbt-built dataset scraped from Transfermarkt, distributed
-as CSV/DuckDB files. We do not scrape Transfermarkt ourselves.
+## Data
 
-Market value in this dataset is Transfermarkt's own estimate, not a verified
-sale price and not necessarily the fee a club would actually pay.
+[Transfermarkt datasets](https://github.com/dcaribou/transfermarkt-datasets)
+(David Caribou; public, CC0, scraped from Transfermarkt). We do not scrape
+Transfermarkt ourselves. Raw files are not committed; see `data/raw/README.md`
+for the download commands (six gzipped CSVs, about 65 MB).
 
-## Unit of observation
+## Analytical dataset
 
-One row per player-season: **32,046 player-seasons**, seasons 2020/21
-through 2024/25, across 14 top-flight European domestic leagues. Built by
-aggregating match-level appearances and joining a season-end market value
-(no older than 365 days at the cutoff) — see `DATA_PLAN.md` for the exact construction and every scope/cleaning
-decision.
+`data/processed/player_season.csv`: **32,046 rows, 26 columns**, one row per
+player-season, 2020/21-2024/25, 14 August-May domestic top-flight leagues.
+Every scope and cleaning decision is logged in [`DATA_PLAN.md`](DATA_PLAN.md).
 
-## Variables
+- Appearances are joined to games and summed per player-season. When a player
+  changed clubs, the row is labelled by the club with most minutes.
+- Market value = latest Transfermarkt valuation on or before July 31 after the
+  season, at most 365 days old.
+- Per-90 statistics are only analysed for players with at least 450 minutes
+  (23,328 rows, 72.8%, flagged by `analysis_minutes_eligible`); other rows are kept.
+- 920 of 32,966 rows (2.8%) were excluded (missing position/date of birth, no or
+  stale valuation): `data/processed/exclusion_summary.csv`.
 
-`player_id`, `player_name`, `season`, `age`, `position`, `sub_position`,
-`club`, `competition_id`, `competition`, `country`, `appearances`,
-`total_minutes`, `goals`, `assists`, `goals_per_90`, `assists_per_90`,
+Variables: `player_id`, `player_name`, `season`, `age`, `age_group`, `position`,
+`sub_position`, `club`, `competition_id`, `competition`, `country`,
+`appearances`, `total_minutes`, `minutes_per_appearance`, `goals`, `assists`,
+`goal_contributions`, `goals_per_90`, `assists_per_90`,
 `goal_contributions_per_90`, `analysis_minutes_eligible`,
-`market_value_in_eur`, `valuation_date`, `valuation_age_days`.
+`market_value_in_eur`, `market_value_millions`, `log_market_value` (log10),
+`valuation_date`, `valuation_age_days`.
 
-`club`/`competition` reflect a player's primary (most-minutes) club that
-season — see `DATA_PLAN.md` for how multi-club seasons are handled.
-`competition_id` is the unique league key (the source's own league `name`
-is not unique: Russia and Ukraine are both `premier-liga`).
+## Methods
 
-Per-90 columns are only meaningful when `analysis_minutes_eligible` is true
-(`total_minutes >= 450`). Low-minute rows are kept, not deleted.
+- Descriptive statistics, medians on a log value axis, box plots, binned medians.
+- Spearman rank correlations (robust to skew) and eta squared (share of log-value
+  variance between groups) as association summaries. These are not
+  "percentage contributions" and are not additive.
+- Position-aware: goals/assists per 90 are interpreted for attackers and, more
+  cautiously, midfielders; never as a quality measure for defenders or goalkeepers.
+- **Segmentation (exploratory):** K-means (k = 4) on attackers with at least 450
+  minutes using age, total minutes, goals/90 and assists/90 (per-90 rates capped
+  at the 99th percentile, standardised; market value not used). Silhouette is
+  about 0.21 for k = 2 to 6, so structure is weak and k = 4 was chosen for
+  interpretability. Separately, **rule-based segments** (high scorers, creative,
+  young, prime age, experienced) are defined with explicit cut-offs; they are
+  segments, not clusters. Midfielders, defenders and goalkeepers are not
+  segmented (no suitable variables). See `notebooks/05_player_segmentation.ipynb`.
 
-## Approach
+## Figures
 
-- Clean and join the relevant tables, aggregate appearances to player-season.
-- Exploratory data analysis: distributions, market value vs. age/position/
-  performance stats, a correlation view for sensible numeric variables.
-- **Position-aware analysis**: forwards, midfielders, defenders, and
-  goalkeepers are not judged by the same stats. Comparisons are done within
-  position (and sub-position, where the data supports it) rather than pooling
-  all players together.
-- This is an EDA and visualization project. The instructor has confirmed
-  that machine learning and complex statistical modeling are not required,
-  and none is planned. Simple summaries (medians, Spearman correlations)
-  support the plots.
-- Optional: if injury data can be found that is reliable and easy to
-  integrate, it may be added as a secondary variable. Not required, and not
-  a second dataset until the core analysis is done.
+`figures/final/` holds the report/presentation figures (see
+`figures/final/README.md` for the suggested presentation set). `figures/*.png`
+are the earlier exploratory versions.
 
-## Limitations
+## Streamlit app
 
-- Market value is Transfermarkt's estimate, subject to its own biases and
-  update lag — not ground truth.
-- Analysis is restricted to 14 Aug–May European domestic leagues; 8
-  calendar-year leagues (Brazil, MLS, Japan, etc.) are excluded for
-  consistency, and 9 further leagues have no match-level data in the
-  source dataset at all (see `DATA_PLAN.md`).
-- Player valuations are recorded at irregular dates, not per season — "the"
-  value for a season is the latest valuation on or before July 31 following
-  that season, a documented assumption, not a given fact of the data.
-- Players with no valuation on record before that cutoff (mostly fringe
-  squad players) are dropped rather than imputed, as are valuations more
-  than 365 days old at the cutoff — 920 of 32,966 rows (2.8%) in total, see
-  `data/processed/exclusion_summary.csv`.
-- Market values differ enormously between leagues, so pooled relationships
-  partly reflect league. Not yet resolved (see `DATA_PLAN.md`).
-- Russian and Ukrainian leagues are kept, but 2022+ seasons are affected by
-  the war.
-- Playing time, goals, and assists are influenced by team and tactical
-  context that isn't captured here.
+```bash
+uv venv && uv pip install -r requirements.txt
+uv run streamlit run app.py
+```
 
-## Project structure
+Pages: Overview, Player characteristics, Position analysis, League analysis,
+Player segments, Methodology & limitations. The app reads
+`data/processed/player_season.csv` directly; no notebooks or raw data needed.
+
+## Repository structure
 
 ```
 .
 ├── README.md
-├── DATA_PLAN.md          # data inspection notes, joins, decisions, open questions
-├── MEETING2.md           # findings, limitations, professor questions, talk outline
-├── .gitignore
-├── requirements.txt
+├── FINDINGS.md            # six findings: evidence, interpretation, limitation
+├── DATA_PLAN.md           # data inspection notes, joins, decisions, variables
+├── MEETING2.md            # second instructor meeting notes
+├── FINAL_CHECKLIST.md     # project requirements audit
+├── app.py                 # Streamlit dashboard
+├── requirements.txt       # pinned versions (Python 3.12)
+├── src/
+│   ├── data.py            # loading, constants, filtering
+│   ├── plots.py           # figure functions shared by notebooks and app
+│   └── segments.py        # K-means clusters and rule-based segments (attackers)
+├── notebooks/
+│   ├── 01_data_inspection.ipynb
+│   ├── 02_build_player_season.ipynb
+│   ├── 03_initial_eda.ipynb      # exploratory version
+│   ├── 04_final_eda.ipynb
+│   └── 05_player_segmentation.ipynb
 ├── data/
-│   ├── raw/               # downloaded source files (gitignored, see below)
-│   └── processed/         # player_season.csv + exclusion_summary.csv, tracked in git
-├── figures/               # saved EDA plots (.png)
-└── notebooks/
-    ├── 01_data_inspection.ipynb
-    ├── 02_build_player_season.ipynb
-    └── 03_initial_eda.ipynb
+│   ├── raw/               # downloaded source files (gitignored)
+│   └── processed/         # player_season.csv, exclusion_summary.csv
+├── figures/               # exploratory figures
+│   └── final/             # final figures
+└── report/
+    └── REPORT_OUTLINE.md
 ```
 
-`src/`, `report/`, and `presentation/` will be added when there's something
-to put in them, rather than as empty placeholders.
-
-## Setup
+## Reproduction
 
 ```bash
-uv venv
+uv venv --python 3.12
 uv pip install -r requirements.txt
-uv run jupyter lab
+# download raw data as described in data/raw/README.md, then run in order:
+for n in 02_build_player_season 03_initial_eda 04_final_eda 05_player_segmentation; do
+  uv run jupyter nbconvert --to notebook --execute --inplace notebooks/$n.ipynb
+done
+uv run streamlit run app.py
 ```
 
-(Any standard Python 3.11+ environment with the packages in
-`requirements.txt` works — `uv` is just what this project uses.)
+Notebook 01 only inspects the raw tables. Notebook 02 rebuilds the processed
+CSV; 04 and 05 regenerate `figures/final/`. The processed CSV is committed, so
+notebooks 03-05 and the app run without the raw data.
 
-## Data acquisition
+## Limitations
 
-Raw data is not committed to this repository (too large for GitHub, and
-easy to regenerate). See `data/raw/README.md` for the exact download
-commands. In short: six gzipped CSVs (`players`, `appearances`,
-`player_valuations`, `games`, `clubs`, `competitions`) totaling ~65 MB,
-downloaded from the dataset's public hosting.
+- Transfermarkt values are estimates with their own biases and update timing.
+- Associations only; age, playing time, output, club and league overlap.
+- League is a large confounder; club strength is not in the data.
+- No defensive, goalkeeping, injury or contract data; attacking statistics are
+  informative mainly for attackers.
+- The 450-minute, July 31 and 365-day rules are practical analytical choices.
+- Scope: 14 August-May leagues only. Eight calendar-year leagues are excluded
+  for a consistent valuation cut-off, and nine further leagues have no
+  match-level data in the source.
+- Russian and Ukrainian leagues are kept, but 2022+ is affected by the war.
+- The same player appears in several seasons, so rows are not independent.
 
-## Reproducibility
+## References
 
-- Raw data acquisition is documented in `data/raw/README.md`; anyone can
-  re-download the exact same public files.
-- Cleaning and aggregation decisions (season definition, which competitions
-  are included, how a valuation date maps to a season, etc.) are logged in
-  `DATA_PLAN.md` as they're made, not left implicit in notebook code.
-- The processed player-season table, once built, is committed under
-  `data/processed/` so the analysis can be re-run without re-downloading
-  raw data.
-
-## Current status
-
-Data cleaned, joined, and aggregated to player-season
-(`data/processed/player_season.csv`, 32,046 rows). Quality rules (valuation
-staleness cap, per-90 minutes eligibility, unique league identity) are
-applied and documented. Position-aware EDA (6 figures, Spearman tables) is
-in `notebooks/03_initial_eda.ipynb`; preliminary findings and open questions
-are in `MEETING2.md`. No modeling is planned; the project is EDA and visualization.
-
-## Timeline
-
-- **Sept 18–24**: inspect and clean data, combine required tables, aggregate
-  to player-season, begin EDA.
-- **Sept 25–Oct 1**: build/refine visualizations, simple supporting stats if
-  useful, both instructor meetings, revise on feedback.
-- **Oct 2–8**: finalize analysis, interpret findings, prepare presentation.
-- **Oct 9–14**: finish written report, clean up repo, verify reproducibility,
-  finish presentation materials.
-- **Oct 15**: final submission.
+- Caribou, D. *transfermarkt-datasets*. https://github.com/dcaribou/transfermarkt-datasets (data scraped from Transfermarkt, https://www.transfermarkt.com).
+- Repository: https://github.com/niloy-saha-123/DATA400-football-player-market-value-analysis
