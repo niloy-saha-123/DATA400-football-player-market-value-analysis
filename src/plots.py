@@ -6,7 +6,7 @@ figure that says so instead of raising.
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib.ticker import FuncFormatter, NullFormatter
+from matplotlib.ticker import FuncFormatter, LogLocator, NullFormatter
 from scipy.stats import spearmanr
 
 from .data import AGE_GROUPS, LOGMV, MV, POS_COLORS, POS_ORDER, SUBPOS_GROUP, eur
@@ -66,6 +66,9 @@ def fig_value_by_age(df, min_n=20):
     for pos, g in lines.items():
         ax.plot(g.index, g["median"], marker="o", ms=3, lw=2, color=POS_COLORS[pos], label=pos)
     _log_axis(ax)
+    # the medians span about one decade, so label 2x and 5x steps too, or only one tick label would show
+    ax.yaxis.set_minor_locator(LogLocator(subs=(2, 5)))
+    ax.yaxis.set_minor_formatter(EUR_AXIS)
     ax.set(title="Median market value by age", xlabel="Age (17 and 36 include younger/older)",
            ylabel="Median market value (log scale)")
     ax.legend(title="Position", frameon=False)
