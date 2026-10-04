@@ -106,7 +106,7 @@ cannot conclude, limitations, and an expandable technical section. The app reads
 ```
 .
 ├── README.md
-├── FINDINGS.md            # six findings: evidence, interpretation, limitation
+├── FINDINGS.md            # seven findings: evidence, interpretation, limitation
 ├── DATA_PLAN.md           # data inspection notes, joins, decisions, variables
 ├── MEETING2.md            # second instructor meeting notes
 ├── FINAL_CHECKLIST.md     # project requirements audit

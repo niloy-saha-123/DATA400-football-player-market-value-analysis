@@ -54,7 +54,8 @@ available. Re-check any number against the notebook before quoting it.
 - Honest conclusion: readable slices of a continuum, not distinct types. Midfielders: silhouettes 0.21-0.26; defenders/goalkeepers lack variables.
 
 ## 8. Findings
-- See `FINDINGS.md`: six findings, each with evidence, interpretation and limitation.
+- See `FINDINGS.md`: seven findings, each with evidence, interpretation and limitation.
+- Age x output (NB05 §6b, `16_age_output_attackers.png`): attackers ≥450 min, high output = top quartile goals + assists per 90 (≥0.595); medians young/prime/experienced high output €10M / €8M / €3.5M, lower output €2.3M / €2.0M / €1.0M; same ordering inside top-5 (€31M vs €25M) and other leagues (€5M vs €4.5M).
 
 ## 9. Limitations
 - Estimated values; associational only; overlapping age/minutes/output/club/league; club strength missing.
