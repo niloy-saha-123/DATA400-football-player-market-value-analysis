@@ -45,9 +45,11 @@ coefficient is 0.56 (range 0.37-0.63), so it is not only a league effect.
 **Interpretation:** Higher-valued players play more, in every position and every
 league.
 
-**Limitation:** Works both ways: clubs play players they value, and playing
-raises visibility and value. Injuries, club level and age are also tied to
-minutes. This is not evidence that minutes cause value.
+**Limitation:** The causal direction is unclear. Clubs may give more minutes to
+players they already value, playing regularly may raise visibility and value, and
+ability and club level may affect both; none of these mechanisms was tested.
+Injuries and age are also tied to minutes. This is not evidence that minutes
+cause value.
 
 ## 4. Goal involvement is more associated with value for attackers than for others
 

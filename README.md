@@ -17,7 +17,7 @@ Details, evidence and limitations for each are in [`FINDINGS.md`](FINDINGS.md).
 
 1. Value is extremely right-skewed, so a log scale is used throughout. Age follows a hump (plateau about 22-28, decline after 30), so one linear coefficient (Spearman -0.03) is misleading.
 2. League is the largest single grouping: about 35% of log-value variance lies between leagues (vs 6.5% age group, 1% position). League medians range from €13M (Premier League) to €0.35M (Ukraine).
-3. Playing time has the strongest simple numeric association (Spearman 0.51), and it works in both directions.
+3. Playing time has the strongest simple numeric association (Spearman 0.51 for minutes); the causal direction is unclear.
 4. Goal involvement is more associated with value for attackers (0.45) than midfielders (0.26) or defenders (0.19).
 5. Position and sub-position separate values little; goalkeepers are lowest.
 6. K-means on attackers gives four readable but weakly separated groups (silhouette about 0.21 for every k). Rule-based segments are shown separately and labelled as segments.
@@ -128,8 +128,15 @@ cannot conclude, limitations, and an expandable technical section. The app reads
 │   └── processed/         # player_season.csv, exclusion_summary.csv
 ├── figures/               # exploratory figures
 │   └── final/             # final figures
-└── report/
-    └── REPORT_OUTLINE.md
+├── report/
+│   └── REPORT_OUTLINE.md
+└── presentation/
+    ├── DATA400_market_value_presentation.pptx / .pdf    # main deck (11 slides)
+    ├── DATA400_market_value_backup_slides.pptx / .pdf   # backup deck for questions
+    ├── SPEAKER_NOTES.md
+    ├── CLAIM_VERIFICATION.md                            # source of every slide number
+    ├── make_figures.py                                  # renders the slide-sized figures
+    └── figures/
 ```
 
 ## Reproduction

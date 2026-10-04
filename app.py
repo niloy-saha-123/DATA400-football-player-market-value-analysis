@@ -215,9 +215,10 @@ with c1:
             f"{max(pos_r.values()):.2f} within each position.</p>")
 with c2:
     callout("caution", "Association ≠ causation",
-            "<p>Players who perform well earn more minutes; clubs pick the players they value; and club quality or "
-            "ability can drive both. More minutes are <b>associated</b> with higher value, but this analysis does not "
-            "show that playing more <b>causes</b> value to rise.</p>")
+            "<p>The causal direction is unclear. Clubs may give more minutes to players they already value, playing "
+            "regularly may raise visibility, and ability or club level may affect both; none of these was tested. "
+            "More minutes are <b>associated</b> with higher value, but this analysis does not show that playing more "
+            "<b>causes</b> value to rise.</p>")
 
 # ---------------------------------------------------------------- 8. position
 section("position", "Football positions should not be evaluated the same way",
@@ -262,7 +263,8 @@ gc90 = {p: rho(elig[elig["position"] == p], "goal_contributions_per_90") for p i
 c1, c2 = st.columns(2, gap="large")
 with c1:
     callout("shows", "What this shows",
-            "<p>Black dots are the median value of players grouped by output. For attackers, value rises steadily with "
+            "<p>Faint dots are a random sample of up to 2,500 player-seasons; the black line (medians of 8 equal-size "
+            "groups) and the correlations use all eligible players. For attackers, value rises steadily with "
             f"output. Spearman correlation of goals per 90 with value: Attack <b>{g90['Attack']:.2f}</b>, Midfield "
             f"<b>{g90['Midfield']:.2f}</b>, Defender <b>{g90['Defender']:.2f}</b>. For goals + assists per 90: "
             f"{gc90['Attack']:.2f}, {gc90['Midfield']:.2f}, {gc90['Defender']:.2f}.</p>")
@@ -342,7 +344,7 @@ cards([
     ("Silhouette score", f"{min(sil.values()):.2f} to {max(sil.values()):.2f}",
      "<p>Measures how well separated groups are (−1 to 1). Around 0.2 means heavy overlap; roughly 0.25 or less is "
      "usually read as weak structure.</p>"),
-    ("Elbow", "No clear elbow", "<p>The fit improved smoothly as k grew, with no point where extra groups stopped helping.</p>"),
+    ("Elbow", "No sharp elbow", "<p>The fit improved smoothly as k grew, with no point where extra groups stopped helping.</p>"),
     ("Chosen", f"k = {K}", "<p>Chosen because the four groups are readable, <b>not</b> because the data showed four "
                            "objectively correct types.</p>"),
 ], min_px=200)

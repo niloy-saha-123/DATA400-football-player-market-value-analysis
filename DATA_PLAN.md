@@ -124,8 +124,9 @@ actually downloaded.
   recent window is enough player-seasons (~30k estimated) for the analysis
   without carrying an unnecessarily long history for a 7-week mini-project.
   2025/26 season data is complete for these leagues (season ends ~May 2026,
-  well inside the dataset's July 2026 freeze) but was left out of the
-  primary window to keep it to five most-recent, clearly-finished seasons.
+  well inside the dataset's July 2026 freeze) but was left out: the project
+  uses a fixed five-season window, 2020/21 through 2024/25, to keep the scope
+  manageable and consistent.
 
 - **Valuation → season mapping (decided)**: for each player-season, take
   the **latest `player_valuations` record on or before July 31 of
@@ -138,10 +139,11 @@ actually downloaded.
   - The Aug–May leagues in scope finish their seasons April–June, so the
     June update round is effectively "the" end-of-season valuation for most
     players.
-  - A July 31 cutoff reliably captures that June update while staying
-    ahead of the next season's transfer-window activity (valuation volume
-    picks up again in August–September) — this avoids pulling in a value
-    that already reflects a move or run of form from the *next* season.
+  - July 31 is a consistent post-season cutoff: it captures that common June
+    update while avoiding values from the following competitive season
+    (valuation volume picks up again in August–September), which could
+    already reflect a move or run of form from the *next* season. It is a
+    practical choice, not an objectively correct date.
   - Not used: nearest-to-season-start (would miss the performance just
     played), or a window average (adds complexity without a clear benefit
     for this project's scope).
@@ -166,11 +168,14 @@ actually downloaded.
   correlations that use age, position, minutes, or market value alone use all
   rows.
 
-- **League effect (open, not resolved).** Median market value differs by an
-  order of magnitude between leagues (shown in `03_initial_eda.ipynb`).
-  Pooled relationships will partly reflect league. No leagues have been
-  removed. Options to discuss with the instructor: keep all and compare/stratify by
-  league, or restrict to a smaller set of leagues.
+- **League effect (final approach).** All 14 leagues are retained. League
+  differences are analysed explicitly (`04_final_eda.ipynb` §7-8, §10), and
+  selected numeric relationships are checked within leagues (minutes, and
+  attackers' goals + assists per 90, §10; the age x output comparison inside
+  and outside the top-five leagues, `05_player_segmentation.ipynb` §6b). League
+  is treated as context and a confounder. No multivariable model adjusts
+  simultaneously for league or club, because the project is descriptive EDA;
+  this remains a limitation and a possible extension.
 
 - **Multi-club players within a season (decided)**: 6.4% of player-seasons
   in the chosen scope involve more than one club (3.3% involve more than
@@ -280,15 +285,12 @@ Clustering is exploratory: if K-means gives no interpretable football groups,
 domain-defined segments are acceptable and must be called segments/profiles,
 not clusters. See `notebooks/05_player_segmentation.ipynb`.
 
-## Open questions for the instructor
+## Questions raised at the second instructor meeting (resolved)
 
-1. **League confound.** Market values differ hugely by league. Keep all 14
-   leagues and stratify/control for league, or narrow to major leagues?
-2. **Valuation rule.** Is "latest valuation on or before July 31, no older
-   than 365 days" a reasonable season-end mapping?
-3. **Depth.** Does the current position-aware EDA and visualization approach
-   provide enough depth, or is there another comparison or visualization that
-   would strengthen the analysis?
-
-(The multi-club "primary club by minutes" rule and the 14-league Aug–May
-scope are decided; they are documented above, not open.)
+1. **League confound.** Kept all 14 leagues; see "League effect (final
+   approach)" above.
+2. **Valuation rule.** Kept the July 31 / 365-day rule as a documented,
+   practical choice.
+3. **Depth.** The instructor approved the direction and suggested exploring
+   player groupings; see `05_player_segmentation.ipynb` (K-means plus
+   rule-based segments).
