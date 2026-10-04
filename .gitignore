@@ -188,10 +188,6 @@ cython_debug/
 #   option (not recommended) you can uncomment the following to ignore the entire idea folder.
 # .idea/
 
-# Abstra
-#   Abstra is an AI-powered process automation framework.
-#   Ignore directories containing user credentials, local state, and settings.
-#   Learn more at https://abstra.io/docs
 .abstra/
 
 # Visual Studio Code
@@ -216,7 +212,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
-.code-graph/
 
 # macOS
 .DS_Store
@@ -225,7 +220,3 @@ __marimo__/
 data/raw/*
 !data/raw/README.md
 
-# Local AI-agent metadata (not part of the project)
-.claude/
-.serena/
-CLAUDE.md

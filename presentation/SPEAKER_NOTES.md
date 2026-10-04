@@ -104,9 +104,9 @@ Talking points, not a script. Each slide: what to say, one number to remember, o
 
 **Transition:** "Thank you, happy to take questions."
 
-## Backup divider
+## Backup deck: title slide
 
-**What to say:** Only use backup slides when a question needs them.
+**What to say:** Separate file (DATA400_market_value_backup_slides.pptx). Open it only when a question needs one of these slides.
 
 ## Backup A: cleaning
 

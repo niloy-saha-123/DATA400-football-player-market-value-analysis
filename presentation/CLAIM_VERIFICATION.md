@@ -1,6 +1,6 @@
 # Claim verification
 
-Every number in the slides, where it comes from, and how it is calculated. All
+Every number in the main deck (slides 1-11) and the backup deck (Backup A-E), where it comes from, and how it is calculated. All
 values were recomputed from `data/processed/player_season.csv` and
 `exclusion_summary.csv` with the functions in `src/` on 2026-10-04 and match the
 executed notebooks. Abbreviations: NB04 = `notebooks/04_final_eda.ipynb`,
@@ -33,15 +33,15 @@ elig = rows with `analysis_minutes_eligible` (≥ 450 min), att = eligible attac
 | 10 | Spearman(minutes, value) = 0.51 | NB04 §5 | `spearmanr(total_minutes, log_market_value)` | Y |
 | 10 | Other numbers repeat slides 5-9 | as above | - | Y |
 | 11 | Same player in up to five seasons | data structure | 5 seasons, one row per player-season | Y |
-| A | Exclusion counts; 23,328 eligible (72.8%) | `exclusion_summary.csv` | as listed | Y |
-| B | Inertia 19,125 / 16,201 / 13,850 / 12,093 / 11,075 | NB05 §1 | `KMeans(k, n_init=20, random_state=0).inertia_` | Y |
-| B | Cluster sizes 1,576 / 1,018 / 2,046 / 1,455 and medians | NB05 §2 | group counts and medians | Y |
-| B | ARI minimum 0.92, median 0.97 (10 seeds); minimum 0.89, median 0.92 (80% subsamples) | NB05 §1 output | `adjusted_rand_score` vs seed-0 fit | Y |
-| B | Clusters ~23% of log-value variance | NB05 §3 | eta squared = 0.230 | Y |
-| C | Thresholds 0.40 / 0.23; segment sizes and medians | NB05 §6 | `segment_thresholds`, `domain_segments` | Y |
-| C | Segments ~14% vs clusters ~23% | NB05 §6 | eta squared 0.142 vs 0.230 | Y |
-| D | All 14 league medians | NB04 §7 | as slide 7 | Y |
-| E | Spearman 0.51 | NB04 §5 | as slide 10 | Y |
+| Backup A | Exclusion counts; 23,328 eligible (72.8%) | `exclusion_summary.csv` | as listed | Y |
+| Backup B | Inertia 19,125 / 16,201 / 13,850 / 12,093 / 11,075 | NB05 §1 | `KMeans(k, n_init=20, random_state=0).inertia_` | Y |
+| Backup B | Cluster sizes 1,576 / 1,018 / 2,046 / 1,455 and medians | NB05 §2 | group counts and medians | Y |
+| Backup B | ARI minimum 0.92, median 0.97 (10 seeds); minimum 0.89, median 0.92 (80% subsamples) | NB05 §1 output | `adjusted_rand_score` vs seed-0 fit | Y |
+| Backup B | Clusters ~23% of log-value variance | NB05 §3 | eta squared = 0.230 | Y |
+| Backup C | Thresholds 0.40 / 0.23; segment sizes and medians | NB05 §6 | `segment_thresholds`, `domain_segments` | Y |
+| Backup C | Segments ~14% vs clusters ~23% | NB05 §6 | eta squared 0.142 vs 0.230 | Y |
+| Backup D | All 14 league medians | NB04 §7 | as slide 7 | Y |
+| Backup E | Spearman 0.51 | NB04 §5 | as slide 10 | Y |
 
 Interpretive statements (no number) and their basis:
 
