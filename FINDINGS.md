@@ -87,8 +87,9 @@ distributions: star attackers sit far above the rest.
 high-minute starters (median value €8M), creative attackers (€5M), younger
 lower-output (€1.5M), older with fewer minutes (€1M)
 (`12_kmeans_profiles.png`, `14_kmeans_value.png`). Silhouette is about 0.21 for
-every k from 2 to 6 and there is no elbow; repeated fits agree (adjusted Rand
-index 0.92-0.97, 0.89-0.92 on 80% subsamples). Clusters explain 23% of log-value
+every k from 2 to 6 and there is no sharp elbow; repeated fits agree (adjusted Rand
+index vs the seed-0 fit: minimum 0.92, median 0.97 across 10 seeds; minimum 0.89,
+median 0.92 on 80% subsamples). Clusters explain 23% of log-value
 variance among these attackers, league 43%.
 
 **Interpretation:** K-means produced these groups from the selected variables.

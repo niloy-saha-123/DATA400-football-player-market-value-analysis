@@ -47,7 +47,7 @@ available. Re-check any number against the notebook before quoting it.
 ## 7. Player segmentation
 - Question, scope: 6,095 attackers with >= 450 minutes; features age, minutes, goals/90, assists/90; market value excluded from clustering.
 - Choosing k: silhouette 0.219 / 0.215 / 0.207 / 0.214 / 0.209 for k = 2-6; no elbow; k = 4 chosen for interpretability (`11`).
-- Stability: adjusted Rand index 0.92-0.97 across seeds; 0.89-0.92 on 80% subsamples.
+- Stability: adjusted Rand index vs the seed-0 fit, minimum 0.92 / median 0.97 across 10 seeds; minimum 0.89 / median 0.92 on 80% subsamples.
 - Clusters (n, median value): regular high-minute starters 1,576, €8M; creative 1,018, €5M; younger lower-output 2,046, €1.5M; older fewer minutes 1,455, €1M (`12`, `13`, `14`).
 - Eta squared of log value: K-means clusters 0.230, league 0.430, age group 0.056, rule-based segments 0.142.
 - Rule-based segments and cut-offs: goals/90 top quartile 0.40; assists/90 top quartile 0.23; sizes High scorers 1,524, Creative 1,074, Young 1,235, Prime 1,456, Experienced 806 (`15`).
