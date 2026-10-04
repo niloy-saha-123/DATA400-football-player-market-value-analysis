@@ -13,8 +13,7 @@ import matplotlib.pyplot as plt
 
 from src import plots
 from src.data import load_player_season
-from src.segments import age_output_groups, attacker_groups, eligible_attackers, kmeans_fit, scale_features, FEATURES
-from sklearn.metrics import silhouette_score
+from src.segments import FEATURES, age_output_groups, attacker_groups, eligible_attackers
 
 OUT = Path(__file__).resolve().parent / "figures"
 OUT.mkdir(exist_ok=True)
@@ -49,12 +48,5 @@ save(plots.fig_value_by_league(df), "league.png", 5.6, 4.6, short_labels=True)
 save(plots.fig_age_output(ao, q), "age_output.png", 8.2, 3.9)
 save(plots.fig_group_heatmap(g, "kmeans_group", FEATURES), "kmeans_profiles.png", 6.8, 3.3)
 save(plots.fig_value_vs_minutes(df), "minutes.png", 7.6, 3.8)
-save(plots.fig_value_distribution(df), "distribution.png", 9.0, 3.3)
-save(plots.fig_association_summary(df), "association.png", 9.0, 3.9)
 
-Z = scale_features(att)
-ks = list(range(2, 7))
-fits = [kmeans_fit(Z, k) for k in ks]
-sil = [silhouette_score(Z, f.labels_, sample_size=4000, random_state=0) for f in fits]
-save(plots.fig_k_selection(ks, [f.inertia_ for f in fits], sil), "k_selection.png", 8.6, 3.3)
 print("wrote", sorted(p.name for p in OUT.glob("*.png")))
