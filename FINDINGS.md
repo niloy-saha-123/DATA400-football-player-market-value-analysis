@@ -103,3 +103,28 @@ capture less of the value variation (14%).
 age, which are already associated with value. Not applied to midfielders (similar
 silhouettes, goals/assists are weak descriptors), defenders or goalkeepers (no
 suitable variables).
+
+## 7. Young high-output attackers have the highest median values
+
+**Evidence:** Attackers with at least 450 minutes, split by age band and by
+whether goals + assists per 90 is in the top quartile (at least 0.595)
+(`notebooks/05_player_segmentation.ipynb` §6b, `16_age_output_attackers.png`):
+
+| Age band | High output: median (n) | Lower output: median (n) |
+|---|---|---|
+| Under 24 | €10M (513) | €2.3M (1,643) |
+| 24-28 | €8M (625) | €2.0M (1,883) |
+| 29+ | €3.5M (387) | €1.0M (1,044) |
+
+The ordering holds inside the five largest leagues (young high output €31M vs
+prime high output €25M) and outside them (€5M vs €4.5M). The share of
+top-five-league players is similar across the groups (39-48%).
+
+**Interpretation:** At the same output level, younger attackers carry higher
+median values, and within every age band high-output attackers are valued far
+above lower-output ones. This is consistent with value reflecting expected
+future performance and resale potential, but the data cannot test that.
+
+**Limitation:** Descriptive cross-tabulation with a practical quartile cut-off;
+contract length, club level and potential are not in the data. The
+high-output groups are fairly small (387-625 rows each).

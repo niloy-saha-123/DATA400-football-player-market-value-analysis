@@ -326,3 +326,29 @@ def fig_value_by_group(a, group_col):
     ax.grid(axis="y", visible=False)
     fig.tight_layout()
     return fig
+
+
+def fig_age_output(a, q):
+    """Median value by age band x output (eligible attackers); bars labelled with median and n."""
+    from .segments import AGE_BANDS
+    if a.empty:
+        return _empty()
+    t = a.groupby(["age_band", "output"])[MV].agg(["median", "size"])
+    fig, ax = plt.subplots(figsize=(9, 4.8))
+    x = np.arange(len(AGE_BANDS))
+    for off, out, color in [(-0.2, "High output", "#D55E00"), (0.2, "Lower output", "#7A8CA5")]:
+        vals = [t.loc[(b, out), "median"] if (b, out) in t.index else np.nan for b in AGE_BANDS]
+        ns = [int(t.loc[(b, out), "size"]) if (b, out) in t.index else 0 for b in AGE_BANDS]
+        ax.bar(x + off, vals, width=0.38, color=color, label=out)
+        for xi, v, n in zip(x + off, vals, ns):
+            if not np.isnan(v):
+                ax.text(xi, v, f"{eur(v)}\nn={n:,}", ha="center", va="bottom", fontsize=9)
+    ax.yaxis.set_major_formatter(EUR_AXIS)
+    ax.set_ylim(0, t["median"].max() * 1.3)
+    ax.set_xticks(x, AGE_BANDS)
+    ax.set(title=f"Attackers (>= 450 min): median value by age and output\n"
+                 f"High output = top quartile of goals + assists per 90 (>= {q:.2f})",
+           ylabel="Median market value")
+    ax.legend(frameon=False, loc="upper right")
+    fig.tight_layout()
+    return fig

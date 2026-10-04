@@ -66,3 +66,14 @@ def attacker_groups(df):
     pc = PCA(2, random_state=SEED).fit_transform(Z)
     a["pc1"], a["pc2"] = pc[:, 0], pc[:, 1]
     return a
+
+
+AGE_BANDS = ["Young (under 24)", "Prime (24-28)", "Experienced (29+)"]
+
+
+def age_output_groups(a):
+    """Age band x output for eligible attackers. High output = top quartile of goals + assists per 90."""
+    q = a["goal_contributions_per_90"].quantile(0.75)
+    band = pd.Series(np.select([a["age"] < 24, a["age"] < 29], AGE_BANDS[:2], AGE_BANDS[2]), index=a.index)
+    out = np.where(a["goal_contributions_per_90"] >= q, "High output", "Lower output")
+    return a.assign(age_band=band, output=out), q

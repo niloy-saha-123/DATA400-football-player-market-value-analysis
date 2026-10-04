@@ -21,6 +21,19 @@ Details, evidence and limitations for each are in [`FINDINGS.md`](FINDINGS.md).
 4. Goal involvement is more associated with value for attackers (0.45) than midfielders (0.26) or defenders (0.19).
 5. Position and sub-position separate values little; goalkeepers are lowest.
 6. K-means on attackers gives four readable but weakly separated groups (silhouette about 0.21 for every k). Rule-based segments are shown separately and labelled as segments.
+7. Among attackers with at least 450 minutes, young (under 24) high-output attackers have the highest median value (€10M), ahead of prime-age (€8M) and experienced (€3.5M) high-output attackers.
+
+## Audience and stakeholders
+
+- **Football fans, journalists and students** who read Transfermarkt values and want
+  to know what they track.
+- **Analysts and recruitment staff** who use market values as a reference point.
+- **Players and agents**, who are affected when estimated values shape negotiations
+  and public perception.
+
+Possible consequence: treating an estimate as a price, or an association as a cause,
+could mislead decisions about players. The project therefore reports associations
+only and states what it cannot show.
 
 ## Data
 
