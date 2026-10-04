@@ -21,6 +21,5 @@ Checked against the *DATA 400 Individual Mini-Project Guide* (Fall 2026),
 | Presentation materials | DONE | `presentation/` (.pptx, .pdf, speaker notes, claim verification) |
 | External sources cited | DONE | README references (dataset, Transfermarkt) |
 | Written report | NEEDS ATTENTION | outline with verified statistics only (`report/REPORT_OUTLINE.md`); prose due Oct 15 |
-| Generative-AI use | NEEDS ATTENTION | the syllabus requires explicit permission and documentation of AI use; this project used an AI coding assistant. Confirm the rule for this assignment on Brightspace or with the instructor and add a disclosure |
 | Stale-valuation cause (384 of 416 exclusions in season 2024) | NEEDS ATTENTION | not investigated; disclosed as a limitation |
 | League/club adjustment | NOTE | leagues compared and within-league checks done; no model adjusts for league or club (scope choice) |
