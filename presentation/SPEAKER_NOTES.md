@@ -20,7 +20,7 @@ Talking points, not a script. Each slide: what to say, one number to remember, o
 
 ## 3. Data
 
-**What to say:** Source is David Caribou's public transfermarkt-datasets, which is scraped from Transfermarkt and released under CC0. Walk through the four numbers: 32,046 player-seasons, 13,511 different players, 14 domestic European leagues, five seasons from 2020/21 to 2024/25. Explain the unit: one row is one player in one season, so a player who played all five seasons appears five times. List the main variables quickly; do not read every one.
+**What to say:** Source is David Caribou's public transfermarkt-datasets, which is scraped from Transfermarkt and released under CC0. Walk through the four numbers: 32,046 player-seasons, 13,511 different players, 14 domestic European leagues, five seasons from 2020/21 to 2024/25. I used a fixed five-season window to keep the scope manageable and consistent. Explain the unit: one row is one player in one season, so a player who played all five seasons appears five times. List the main variables quickly; do not read every one.
 
 **Number to remember:** 32,046 player-seasons
 
@@ -30,7 +30,7 @@ Talking points, not a script. Each slide: what to say, one number to remember, o
 
 ## 4. Data preparation
 
-**What to say:** The raw data is match-level: about 1.9 million appearance rows. Follow the arrows: join each appearance to its game to get season and league, add up minutes, goals and assists per player per season, attach age and position, then attach the valuation at the end of that season. Then the three rules. 450 minutes: per-90 rates explode for players who barely played, one goal in one minute is 90 goals per 90, so rates are only used above five full matches; low-minute players stay in the data for everything else. July 31: Transfermarkt updates values a few times a year, mostly in June, so I take the latest value on or before July 31 after the season. 365 days: if that value is more than a year old, the row is excluded. In total 920 rows (2.8%) were excluded.
+**What to say:** The raw data is match-level: about 1.9 million appearance rows. Follow the arrows: join each appearance to its game to get season and league, add up minutes, goals and assists per player per season, attach age and position, then attach the valuation at the end of that season. Then the three rules. 450 minutes: per-90 rates explode for players who barely played, one goal in one minute is 90 goals per 90, so rates are only used above five full matches; low-minute players stay in the data for everything else. July 31: Transfermarkt updates values a few times a year, with a big round in June, so I take the latest value on or before July 31 after the season. It is a consistent post-season cutoff that captures that June update while avoiding values from the following season; a practical choice, not the one correct date. 365 days: if that value is more than a year old, the row is excluded. In total 920 rows (2.8%) were excluded: 14 had no position or birth date, 490 had no valuation by the cutoff, and 416 had a valuation, but one more than a year old. The exact counts are on backup slide A.
 
 **Number to remember:** 920 excluded of 32,966 (2.8%)
 
@@ -50,7 +50,7 @@ Talking points, not a script. Each slide: what to say, one number to remember, o
 
 ## 6. Position and performance
 
-**What to say:** Goals and assists mean different things for different jobs. For attackers with at least 450 minutes, goals per 90 has a Spearman correlation of 0.37 with value; for midfielders 0.23; for defenders 0.18. The scatter shows attackers: lots of spread, but the median line rises steadily. The caution: this does not say goals are how you judge a defender. The dataset has no tackles, interceptions or saves, so defenders and goalkeepers are under-described.
+**What to say:** Goals and assists mean different things for different jobs. For attackers with at least 450 minutes, goals per 90 has a Spearman correlation of 0.37 with value; for midfielders 0.23; for defenders 0.18. The scatter shows attackers: the dots are a random sample of 2,500 attacker-seasons so the chart stays readable, but the black median line and the correlation use all 6,095 eligible attackers. Lots of spread, but the median line rises steadily. The caution: this does not say goals are how you judge a defender. The dataset has no tackles, interceptions or saves, so defenders and goalkeepers are under-described.
 
 **Number to remember:** Goals/90 vs value: 0.37 attackers, 0.23 midfielders, 0.18 defenders
 
@@ -70,7 +70,7 @@ Talking points, not a script. Each slide: what to say, one number to remember, o
 
 ## 8. Age x performance
 
-**What to say:** Here I split attackers with at least 450 minutes into three age bands and into high or lower output, where high output means the top quarter of goals plus assists per 90. Young high-output attackers have the highest median, €10M, then prime-age high-output €8M, then experienced high-output €3.5M. Lower-output groups sit around €1-2.3M. At the same output, younger is valued higher. I checked it is not just a league effect: the same ordering holds inside the top-five leagues (€31M vs €25M) and outside them (€5M vs €4.5M).
+**What to say:** Here I split attackers with at least 450 minutes into three age bands and into high or lower output, where high output means the top quarter of goals plus assists per 90. Young high-output attackers have the highest median, €10M, then prime-age high-output €8M, then experienced high-output €3.5M. Lower-output groups sit around €1-2.3M. At the same output, younger is valued higher. I checked it is not just a league effect: the same ordering holds inside the top-five leagues (€31M vs €25M) and outside them (€5M vs €4.5M). Why younger players are valued higher (future potential, resale value) is a possible explanation only; the data does not measure it.
 
 **Number to remember:** Young high output €10M vs prime €8M vs experienced €3.5M
 
@@ -80,7 +80,7 @@ Talking points, not a script. Each slide: what to say, one number to remember, o
 
 ## 9. Clustering
 
-**What to say:** K-means puts players with similar numbers into the same group. I used 6,095 attacker-seasons with at least 450 minutes and four inputs: age, minutes, goals per 90, assists per 90, scaled so each counts equally. Market value and league were not inputs, so value can be compared afterwards and the method cannot produce 'league clusters'. I tried k from 2 to 6. The silhouette score, which measures how well separated the groups are, was only about 0.21 to 0.22 at every k, which is weak. I kept k = 4 because the groups are readable: regular starters (€8M), creative attackers (€5M), younger lower-output (€1.5M), older with fewer minutes (€1M). The honest conclusion: attacker profiles form a continuum, and K-means sliced it into four readable but overlapping groups.
+**What to say:** My professor suggested checking whether players form natural groups, so I tried K-means, which puts players with similar numbers into the same group. I used 6,095 attacker-seasons with at least 450 minutes and four inputs: age, total minutes, goals per 90 and assists per 90. The per-90 rates were capped at the 99th percentile and everything was standardised (StandardScaler) so each input counts equally. Market value and league were not inputs, so value can be compared afterwards and the method cannot produce 'league clusters'. I tried k from 2 to 6. The silhouette score, which measures how well separated the groups are, was only about 0.21 to 0.22 at every k, and there was no sharp elbow. I kept k = 4 because the groups are interpretable, not because a metric selected it: regular high-minute starters (€8M), creative attackers (€5M), younger lower-output (€1.5M), older with fewer minutes (€1M). So K-means produced four interpretable but overlapping profiles; attacker profiles look more like a continuum. Because natural separation was weak, I also compared transparent rule-based segments, defined by me, not machine learning. The age x output grouping on the previous slide is one example of that kind of transparent comparison.
 
 **Number to remember:** Silhouette ~0.21 at every k
 
@@ -90,7 +90,7 @@ Talking points, not a script. Each slide: what to say, one number to remember, o
 
 ## 10. Conclusions
 
-**What to say:** Go across the six cards in order and keep each to one sentence. End by repeating that all of these are associations.
+**What to say:** Go across the six cards in order and keep each to one sentence. On playing time, say the causal direction is unclear: clubs may give more minutes to players they already value, playing regularly may raise visibility, and ability or club level may affect both; none of these was tested. End by repeating that all of these are associations.
 
 **Number to remember:** Use one number per card: €2.0M peak at 24-26, 0.51, 0.37, €13M, €10M, 0.21.
 
@@ -110,7 +110,7 @@ Talking points, not a script. Each slide: what to say, one number to remember, o
 
 ## Backup A: cleaning
 
-**What to say:** Exact exclusion counts in the order the rules were applied: 9 missing position, 5 missing birth date, 490 no valuation, 416 stale valuation. 23,328 rows (72.8%) have at least 450 minutes.
+**What to say:** Exact exclusion counts in the order the rules were applied: 9 missing position, 5 missing birth date, 490 no valuation by July 31, 416 with a valuation more than 365 days old (stale, not missing). 23,328 rows (72.8%) have at least 450 minutes.
 
 **Number to remember:** 920 excluded
 
@@ -136,7 +136,7 @@ Talking points, not a script. Each slide: what to say, one number to remember, o
 
 ## Backup E: playing time
 
-**What to say:** Spearman 0.51 between minutes and value. Explain the two-way direction: clubs play players they value, and playing raises value.
+**What to say:** Spearman 0.51 between minutes and value. The causal direction is unclear: clubs may play players they already value, playing may raise visibility, and ability or club level may affect both. None of this was tested.
 
 **Number to remember:** 0.51
 
