@@ -130,7 +130,6 @@ cannot conclude, limitations, and an expandable technical section. The app reads
 │   └── final/             # final figures
 └── presentation/
     ├── DATA400_market_value_presentation.pptx / .pdf    # main deck (11 slides)
-    ├── DATA400_market_value_backup_slides.pptx / .pdf   # backup deck for questions
     ├── make_figures.py                                  # renders the slide-sized figures
     └── figures/
 ```
