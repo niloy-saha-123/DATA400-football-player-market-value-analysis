@@ -24,5 +24,4 @@ them.
 
 Load any file directly with pandas, e.g. `pd.read_csv("data/raw/players.csv.gz")`.
 
-See `DATA_PLAN.md` at the project root for what's in each table and how they
-join.
+Notebook 01 inspects each table; notebook 02 joins them.

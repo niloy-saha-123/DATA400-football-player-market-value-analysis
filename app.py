@@ -19,7 +19,7 @@ from src.ui import callout, cards, css, html, section
 REPO = "https://github.com/niloy-saha-123/DATA400-football-player-market-value-analysis"
 SOURCE = "https://github.com/dcaribou/transfermarkt-datasets"
 RAW_APPEARANCES = 1_894_350  # rows in raw appearances.csv.gz (notebook 01; raw data is not shipped with the app)
-MULTI_CLUB_SHARE = "6.4%"  # share of player-seasons with more than one club (notebook 02, DATA_PLAN.md)
+MULTI_CLUB_SHARE = "6.4%"  # share of player-seasons with more than one club (notebook 02)
 
 st.set_page_config(page_title="Football market value", layout="wide", initial_sidebar_state="collapsed")
 plt.rcParams.update({"font.size": 12, "axes.titlesize": 13, "axes.labelsize": 12,

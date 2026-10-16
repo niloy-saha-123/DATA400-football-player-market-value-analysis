@@ -188,7 +188,6 @@ cython_debug/
 #   option (not recommended) you can uncomment the following to ignore the entire idea folder.
 # .idea/
 
-.abstra/
 
 # Visual Studio Code
 #   Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore 
@@ -219,4 +218,3 @@ __marimo__/
 # Raw data (large, publicly downloadable — see data/raw/README.md)
 data/raw/*
 !data/raw/README.md
-

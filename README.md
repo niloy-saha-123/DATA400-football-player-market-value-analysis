@@ -46,7 +46,6 @@ for the download commands (six gzipped CSVs, about 65 MB).
 
 `data/processed/player_season.csv`: **32,046 rows, 26 columns**, one row per
 player-season, 2020/21-2024/25, 14 August-May domestic top-flight leagues.
-Every scope and cleaning decision is logged in [`DATA_PLAN.md`](DATA_PLAN.md).
 
 - Appearances are joined to games and summed per player-season. When a player
   changed clubs, the row is labelled by the club with most minutes.
@@ -84,9 +83,13 @@ Variables: `player_id`, `player_name`, `season`, `age`, `age_group`, `position`,
 
 ## Figures
 
-`figures/final/` holds the report/presentation figures (see
-`figures/final/README.md` for the suggested presentation set). `figures/*.png`
-are the earlier exploratory versions.
+`figures/final/` holds the final figures (01-10 from notebook 04, 11-16 from
+notebook 05). `figures/*.png` are the earlier exploratory versions from notebook 03.
+`presentation/make_figures.py` re-renders the slide-sized versions:
+
+```bash
+uv run python presentation/make_figures.py
+```
 
 ## Streamlit app
 
@@ -107,9 +110,6 @@ cannot conclude, limitations, and an expandable technical section. The app reads
 .
 ├── README.md
 ├── FINDINGS.md            # seven findings: evidence, interpretation, limitation
-├── DATA_PLAN.md           # data inspection notes, joins, decisions, variables
-├── MEETING2.md            # second instructor meeting notes
-├── FINAL_CHECKLIST.md     # project requirements audit
 ├── app.py                 # Streamlit data story
 ├── requirements.txt       # pinned versions (Python 3.12)
 ├── src/
@@ -128,13 +128,9 @@ cannot conclude, limitations, and an expandable technical section. The app reads
 │   └── processed/         # player_season.csv, exclusion_summary.csv
 ├── figures/               # exploratory figures
 │   └── final/             # final figures
-├── report/
-│   └── REPORT_OUTLINE.md
 └── presentation/
     ├── DATA400_market_value_presentation.pptx / .pdf    # main deck (11 slides)
     ├── DATA400_market_value_backup_slides.pptx / .pdf   # backup deck for questions
-    ├── SPEAKER_NOTES.md
-    ├── CLAIM_VERIFICATION.md                            # source of every slide number
     ├── make_figures.py                                  # renders the slide-sized figures
     └── figures/
 ```
