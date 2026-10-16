@@ -1,6 +1,6 @@
 # What Factors Are Most Associated with Football Player Market Value?
 
-DATA 400 — Data Analytics Capstone Mini-Project, Dickinson College.
+DATA 400 (Data Analytics Capstone) mini-project, Dickinson College.
 
 ## Research question
 

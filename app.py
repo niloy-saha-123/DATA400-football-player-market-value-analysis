@@ -78,7 +78,7 @@ html(f"""<div class="hero" id="top">
 <div class="eyebrow">Research question</div>
 <div class="rq">"Which player characteristics and performance statistics are most strongly associated with a football
 player's market value?"</div>
-<p class="lead">Professional footballers with similar on-field output can carry very different market valuations.
+<p class="lead">Players with similar on-field output can have very different market values.
 This project uses five seasons of historical Transfermarkt-derived data to examine how age, position, playing time,
 attacking output and league context are associated with a player's estimated market value.</p>
 <div class="disclaimer">This is a descriptive and associational analysis. It does not try to determine a player's
@@ -138,7 +138,7 @@ st.markdown(f"<p class='meta' style='margin-top:0.8rem'>“Per 90” means per 9
 
 # ---------------------------------------------------------------- 4. decisions
 section("decisions", "Before analysing the data, I had to make a few decisions",
-        "Real data needs rules. Each rule below is a practical choice, documented and applied consistently.")
+        "Each rule below is a practical choice, applied the same way to every season.")
 cards([
     ("Rule 1", f"{MIN_MINUTES}-minute rule for per-90 stats",
      f"<p>Rates explode for players who barely played: 1 goal in 1 minute = <b>90 goals per 90</b> "
@@ -275,7 +275,7 @@ with c2:
             "association does not show that goals cause value.</p>")
 
 # ---------------------------------------------------------------- 10. league
-section("league", "Where a player competes matters enormously",
+section("league", "League makes the biggest difference",
         "Market value in each of the 14 leagues, sorted by median.")
 all_lg = sorted(df["competition"].unique())
 chosen = st.multiselect("Compare leagues", all_lg, key="lg", placeholder="All 14 leagues shown. Pick leagues to compare them.")
@@ -361,8 +361,8 @@ with c1:
 with c2:
     callout("shows", "What the picture shows",
             "<p>PCA squeezes the four characteristics into two dimensions so they can be drawn. Each dot is an attacker, "
-            "coloured by K-means group. The colours blend into each other instead of forming separate islands: "
-            "a picture of overlap, not proof of real groups.</p>")
+            "coloured by K-means group. The colours blend into each other instead of forming separate islands, "
+            "so the groups overlap heavily.</p>")
 show(plots.fig_value_by_group(g, "kmeans_group"), height=3.6)
 st.caption("Value differs between the groups mostly through minutes and age, which were already associated with value.")
 callout("key", "Conclusion on clustering",
@@ -423,7 +423,7 @@ html(f"""<div class="cards">
 <div class="finding"><div class="n">04 · ATTACKING OUTPUT</div><h4>Linked to value mainly for attackers</h4>
 <p>Goals + assists per 90 relate to value far more for attackers than for defenders.</p>
 <div class="s">{gc90['Attack']:.2f} vs {gc90['Defender']:.2f}</div><div class="sl">Spearman, attackers vs defenders</div></div>
-<div class="finding"><div class="n">05 · LEAGUE</div><h4>Distributions differ dramatically</h4>
+<div class="finding"><div class="n">05 · LEAGUE</div><h4>Large differences between leagues</h4>
 <p>League is the largest single grouping in the data.</p>
 <div class="s">{lm.iloc[0] / lm.iloc[-1]:.0f}×</div><div class="sl">gap between highest and lowest league medians</div></div>
 <div class="finding"><div class="n">06 · PLAYER TYPES</div><h4>No clean natural groups</h4>
@@ -456,7 +456,7 @@ cards([
 ], min_px=210)
 
 # ---------------------------------------------------------------- 18. technical details
-with st.expander("Want the technical details?"):
+with st.expander("Technical details"):
     st.markdown(f"""
 **Data source:** [transfermarkt-datasets]({SOURCE}) by David Caribou (CC0), tables `players`, `appearances`, `games`,
 `player_valuations`, `clubs`, `competitions`. **Code:** [{REPO}]({REPO})

@@ -1,7 +1,6 @@
 # data/raw
 
-Raw dataset files go here. This folder is gitignored except for this file —
-raw data is not committed to the repository (see project README for why).
+Raw dataset files go here. This folder is gitignored except for this file. Raw data is not committed to the repository (see project README for why).
 
 ## What to download
 
@@ -18,7 +17,7 @@ done
 
 This downloads ~65 MB total (`appearances.csv.gz` is the largest at ~45 MB).
 `game_events`, `game_lineups`, `transfers`, `countries`, `national_teams`, and
-`club_games` are not downloaded — they aren't needed for the current
+`club_games` are not downloaded because they aren't needed for the current
 player-season analysis. Add them later only if a specific question requires
 them.
 
